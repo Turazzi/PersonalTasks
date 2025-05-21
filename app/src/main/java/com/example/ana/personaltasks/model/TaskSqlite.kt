@@ -1,9 +1,12 @@
 package com.example.ana.personaltasks.model
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import androidx.room.util.getColumnIndexOrThrow
 import com.example.ana.personaltasks.R
 import java.sql.SQLException
 
@@ -41,9 +44,9 @@ class TaskSqlite (context: Context): TaskDAO {
 
     }
 
-    override fun createTask(task: Task): Long {
-        TODO("Not yet implemented")
-    }
+
+    override fun createTask(task: Task): Long =
+            taskDatabase.insert(TASK_TABLE, null, task.toContentValues())
 
     override fun retrieveTask(id: Int): Task {
         TODO("Not yet implemented")
@@ -60,4 +63,15 @@ class TaskSqlite (context: Context): TaskDAO {
     override fun deleteTask(id: Int): Int {
         TODO("Not yet implemented")
     }
+
+    private fun Task.toContentValues() = ContentValues().apply {
+
+        put(ID_COLUMN, id)
+        put(TITULO_COLUMN, titulo)
+        put(DESCRICAO_COLUMN, descricao)
+        put(DATA_LIMITE_COLUMN, dataLimite)
+
+    }
+
+
 }

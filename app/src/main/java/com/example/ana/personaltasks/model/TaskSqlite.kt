@@ -49,7 +49,24 @@ class TaskSqlite (context: Context): TaskDAO {
             taskDatabase.insert(TASK_TABLE, null, task.toContentValues())
 
     override fun retrieveTask(id: Int): Task {
-        TODO("Not yet implemented")
+        val cursor = taskDatabase.query(
+                true,
+        TASK_TABLE,
+        null,
+        "$ID_COLUMN = ?",
+        arrayOf(id.toString()),
+        null,
+        null,
+        null,
+        null
+        )
+
+        return if (cursor.moveToFirst())
+            cursor.toTask()
+
+        else
+            Task()
+
     }
 
     override fun retrieveTasks(): MutableList<Task> {
@@ -73,5 +90,11 @@ class TaskSqlite (context: Context): TaskDAO {
 
     }
 
+    private fun Cursor.toTask() = Task(
+        getInt(getColumnIndexOrThrow(ID_COLUMN)),
+        getString(getColumnIndexOrThrow(TITULO_COLUMN)),
+        getString(getColumnIndexOrThrow(DESCRICAO_COLUMN)),
+        getString(getColumnIndexOrThrow(DATA_LIMITE_COLUMN))
+    )
 
 }

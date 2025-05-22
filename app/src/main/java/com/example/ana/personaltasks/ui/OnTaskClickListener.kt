@@ -1,4 +1,9 @@
 package com.example.ana.personaltasks.ui
 
-class OnTaskClickListener {
+sealed interface OnTaskClickListener {
+
+    fun onTaskClick(position: Int)
+    fun onRemoveTaskMenuItemClick(position: Int)
+    fun onEditTaskMenuItemClick(position: Int)
+
 }

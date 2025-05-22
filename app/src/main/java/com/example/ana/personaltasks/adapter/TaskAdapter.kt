@@ -27,6 +27,11 @@ class TaskAdapter (
 
             ttb.root.setOnCreateContextMenuListener { menu, v, menuInfo ->
                 (onTaskClickListener as AppCompatActivity).menuInflater.inflate(R.menu.context_menu_main, menu)
+
+                menu.findItem(R.id.view_task_mi).setOnMenuItemClickListener {
+                    onTaskClickListener.onTaskClick(adapterPosition)
+                    true
+                }
                 menu.findItem(R.id.edit_task_mi).setOnMenuItemClickListener {
                     onTaskClickListener.onEditTaskMenuItemClick(adapterPosition)
                     true
@@ -37,7 +42,7 @@ class TaskAdapter (
                 }
             }
 
-            ttb.root.setOnClickListener {onTaskClickListener.onTaskClick(adapterPosition)}
+            ttb.root.setOnClickListener {}
 
         }
 

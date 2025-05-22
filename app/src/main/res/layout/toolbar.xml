@@ -5,6 +5,7 @@
     android:id="@+id/toolbar"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/design_default_color_primary"
+    android:paddingTop="16dp"
     app:title="@string/app_name"
     app:titleTextColor="@color/design_default_color_on_primary"
     app:subtitleTextColor="@color/design_default_color_on_primary" />

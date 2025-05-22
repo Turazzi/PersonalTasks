@@ -80,8 +80,6 @@ class TaskActivity : AppCompatActivity() {
                 descricaoEt.setText(it.descricao)
                 dataEt.setText(it.dataLimite)
 
-
-
                 val viewTask = intent.getBooleanExtra(EXTRA_VIEW_TASK, false)
                 if(viewTask) run {
 
@@ -90,9 +88,9 @@ class TaskActivity : AppCompatActivity() {
                     descricaoEt.isEnabled = false
                     dataEt.isEnabled = false
                     saveBt.visibility = View.GONE
-                    voltarBt.visibility = View.VISIBLE
+                    backBt.visibility = View.VISIBLE
 
-                    voltarBt.setOnClickListener {
+                    backBt.setOnClickListener {
                         val intent = Intent(this@TaskActivity, MainActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
                         startActivity(intent)
@@ -114,13 +112,20 @@ class TaskActivity : AppCompatActivity() {
                     dataEt.text.toString()
                 )
 
-                val resultIntent = Intent().apply{
+                val resultIntent = Intent().apply {
                     putExtra(EXTRA_TASK, task)
                 }
 
                 setResult(RESULT_OK, resultIntent)
                 finish()
 
+            }
+
+            cancelBt.setOnClickListener {
+                val intent = Intent(this@TaskActivity, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+                finish()
             }
 
         }

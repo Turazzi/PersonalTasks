@@ -8,4 +8,5 @@
     <string name="editar">Editar</string>
     <string name="adicionar_task">Adicionar task</string>
     <string name="task_list">Lista de Tasks</string>
+    <string name="visualizar">Visualizar</string>
 </resources>

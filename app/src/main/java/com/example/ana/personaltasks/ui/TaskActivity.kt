@@ -85,6 +85,7 @@ class TaskActivity : AppCompatActivity() {
                     descricaoEt.isEnabled = false
                     dataEt.isEnabled = false
                     saveBt.visibility = View.GONE
+                    cancelBt.visibility = View.GONE
                     backBt.visibility = View.VISIBLE
 
                     backBt.setOnClickListener {

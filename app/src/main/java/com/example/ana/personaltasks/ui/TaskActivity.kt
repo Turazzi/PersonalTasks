@@ -105,6 +105,22 @@ class TaskActivity : AppCompatActivity() {
         with(acb) {
 
             saveBt.setOnClickListener {
+
+                val titulo = tituloEt.text.toString().trim()
+                val descricao = descricaoEt.text.toString().trim()
+
+                if(titulo.isEmpty()) {
+                    tituloEt.error = "Titulo é obrigatório"
+                    tituloEt.requestFocus()
+                    return@setOnClickListener
+                }
+
+                if (descricao.isEmpty()) {
+                    descricaoEt.error = "Descrição é obrigatória"
+                    descricaoEt.requestFocus()
+                    return@setOnClickListener
+                }
+
                 val task = Task (
                     receivedTask?.id?:hashCode(),
                     tituloEt.text.toString(),

@@ -3,6 +3,8 @@ package com.example.ana.personaltasks.ui
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
@@ -81,6 +83,25 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
             taskAdapter.notifyDataSetChanged()
         }.start()
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.add_task_mi -> {
+                acResult.launch(Intent(this, TaskActivity::class.java))
+                true
+            }
+            else -> {false}
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     override fun onTaskClick(position: Int) {

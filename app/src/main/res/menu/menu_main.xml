@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/add_contact_mi"
+        android:id="@+id/add_task_mi"
         android:title="@string/adicionar_task"
         app:showAsAction="always" />
 </menu>

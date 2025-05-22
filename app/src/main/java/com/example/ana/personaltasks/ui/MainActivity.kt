@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
 
     private val taskList: MutableList<Task> = mutableListOf()
 
+
     private val taskAdapter: TaskAdapter by lazy {
         TaskAdapter(taskList, this)
     }
@@ -108,8 +109,12 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
 
         runOnUiThread {
             taskAdapter.notifyDataSetChanged()
-            amb.emptyTv.visibility = if (taskList.isEmpty()) View.VISIBLE else View.GONE
+            updateEmptyTextView()
         }
+    }
+
+    private fun updateEmptyTextView() {
+        amb.emptyTv.visibility = if (taskList.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -143,6 +148,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
         mainController.removeTask(taskList[position].id!!)
         taskList.removeAt(position)
         taskAdapter.notifyItemRemoved(position)
+        updateEmptyTextView()
         Toast.makeText(this, "Task removida!", Toast.LENGTH_SHORT).show()
     }
 

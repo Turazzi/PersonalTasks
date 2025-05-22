@@ -23,6 +23,9 @@ import com.example.ana.personaltasks.databinding.ActivityMainBinding
 import com.example.ana.personaltasks.model.Constant.EXTRA_TASK
 import com.example.ana.personaltasks.model.Constant.EXTRA_VIEW_TASK
 import com.example.ana.personaltasks.model.Task
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MainActivity : AppCompatActivity(), OnTaskClickListener {
 
@@ -61,17 +64,16 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
                 }
 
                 task?.let { receivedTask ->
-                    val position = taskList.indexOfFirst {it.id == receivedTask.id}
+                    val position = taskList.indexOfFirst {it.id == receivedTask.id }
                     if (position != -1) {
-                        taskList[position] = receivedTask
-                        taskAdapter.notifyItemChanged(position)
-                        mainController.modifyTask(receivedTask)
-                    }
-                    else {
-                        taskList.add(receivedTask)
-                        taskAdapter.notifyItemInserted(taskList.lastIndex)
-                        mainController.insertTask(receivedTask)
-                    }
+                    taskList[position] = receivedTask
+                    mainController.modifyTask(receivedTask)
+                } else {
+                    taskList.add(receivedTask)
+                    mainController.insertTask(receivedTask)
+                }
+
+                    makeTaskListOrdenated()
                 }
             }
         }
@@ -85,12 +87,33 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
 
     private fun fillTaskList() {
 
-        taskList.clear()
         Thread {
-            taskList.addAll(mainController.getTasks())
-            taskAdapter.notifyDataSetChanged()
+
+            makeTaskListOrdenated()
+
         }.start()
 
+    }
+
+    private fun makeTaskListOrdenated() {
+        val tasks = mainController.getTasks()
+
+        val ordenatedTasks = tasks.sortedWith(compareBy {
+
+            try {
+                val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                dateFormat.parse(it.dataLimite) ?: Date(Long.MAX_VALUE)
+            } catch (e: Exception) {
+                Date(Long.MAX_VALUE)
+            }
+        })
+
+        taskList.clear()
+        taskList.addAll(ordenatedTasks)
+
+        runOnUiThread {
+            taskAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

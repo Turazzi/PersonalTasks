@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -19,6 +20,7 @@ import com.example.ana.personaltasks.adapter.TaskAdapter
 import com.example.ana.personaltasks.controller.MainController
 import com.example.ana.personaltasks.databinding.ActivityMainBinding
 import com.example.ana.personaltasks.model.Constant.EXTRA_TASK
+import com.example.ana.personaltasks.model.Constant.EXTRA_VIEW_TASK
 import com.example.ana.personaltasks.model.Task
 
 class MainActivity : AppCompatActivity(), OnTaskClickListener {
@@ -105,15 +107,25 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
     }
 
     override fun onTaskClick(position: Int) {
-        TODO("Not yet implemented")
+        Intent(this, TaskActivity::class.java).apply {
+            putExtra(EXTRA_TASK, taskList[position])
+            putExtra(EXTRA_VIEW_TASK, true)
+            startActivity(this)
+        }
     }
 
     override fun onRemoveTaskMenuItemClick(position: Int) {
-        TODO("Not yet implemented")
+        mainController.removeTask(taskList[position].id!!)
+        taskList.removeAt(position)
+        taskAdapter.notifyItemRemoved(position)
+        Toast.makeText(this, "Task removida!", Toast.LENGTH_SHORT).show()
     }
 
     override fun onEditTaskMenuItemClick(position: Int) {
-        TODO("Not yet implemented")
+        Intent(this, TaskActivity::class.java).apply {
+            putExtra(EXTRA_TASK, taskList[position])
+            acResult.launch(this)
+        }
     }
 
 

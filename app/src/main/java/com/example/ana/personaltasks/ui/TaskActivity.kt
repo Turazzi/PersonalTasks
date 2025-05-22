@@ -6,10 +6,7 @@ import android.icu.util.Calendar
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.DatePicker
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import com.example.ana.personaltasks.R
 import com.example.ana.personaltasks.databinding.ActivityTaskBinding
 import com.example.ana.personaltasks.model.Constant.EXTRA_TASK
 import com.example.ana.personaltasks.model.Constant.EXTRA_VIEW_TASK

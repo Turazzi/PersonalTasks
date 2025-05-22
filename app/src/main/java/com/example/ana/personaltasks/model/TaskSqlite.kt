@@ -6,7 +6,6 @@ import android.content.Context.MODE_PRIVATE
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
-import androidx.room.util.getColumnIndexOrThrow
 import com.example.ana.personaltasks.R
 import java.sql.SQLException
 

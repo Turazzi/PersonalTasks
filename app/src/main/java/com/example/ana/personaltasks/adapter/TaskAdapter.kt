@@ -1,5 +1,6 @@
 package com.example.ana.personaltasks.adapter
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -42,16 +43,24 @@ class TaskAdapter (
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        TODO("Not yet implemented")
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder = TaskViewHolder(
+        TileTaskBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+    )
 
-    override fun getItemCount(): Int {
-        TODO("Not yet implemented")
-    }
+    override fun getItemCount(): Int = taskList.size
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        taskList[position].let { task ->
+            with(holder) {
+                tituloTile.text = task.titulo
+                descricaoTile.text = task.descricao
+                dataTile.text = task.dataLimite
+            }
+        }
     }
 
 }

@@ -90,6 +90,14 @@ class TaskActivity : AppCompatActivity() {
                     descricaoEt.isEnabled = false
                     dataEt.isEnabled = false
                     saveBt.visibility = View.GONE
+                    voltarBt.visibility = View.VISIBLE
+
+                    voltarBt.setOnClickListener {
+                        val intent = Intent(this@TaskActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                        finish()
+                    }
 
                 }
             }

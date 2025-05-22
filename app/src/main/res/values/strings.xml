@@ -9,4 +9,5 @@
     <string name="adicionar_task">Adicionar task</string>
     <string name="task_list">Lista de Tasks</string>
     <string name="visualizar">Visualizar</string>
+    <string name="voltar">Voltar</string>
 </resources>

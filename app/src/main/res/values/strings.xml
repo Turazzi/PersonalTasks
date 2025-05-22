@@ -11,4 +11,5 @@
     <string name="visualizar">Visualizar</string>
     <string name="voltar">Voltar</string>
     <string name="cancelar">Cancelar</string>
+    <string name="nenhuma_tarefa_por_aqui_ainda">Nenhuma tarefa por aqui ainda...</string>
 </resources>

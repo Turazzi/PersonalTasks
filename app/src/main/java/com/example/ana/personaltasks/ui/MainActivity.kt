@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -107,6 +108,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
 
         runOnUiThread {
             taskAdapter.notifyDataSetChanged()
+            amb.emptyTv.visibility = if (taskList.isEmpty()) View.VISIBLE else View.GONE
         }
     }
 

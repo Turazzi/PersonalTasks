@@ -47,14 +47,17 @@ class TaskActivity : AppCompatActivity() {
                 val month = calendar.get(Calendar.MONTH)
                 val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-                DatePickerDialog(
+                val datePickerDialog = DatePickerDialog(
                     this@TaskActivity,
                     { _, selectedYear, selectedMonth, selectedDay ->
                         calendar.set(selectedYear, selectedMonth, selectedDay)
                         setText(dateFormat.format(calendar.time))
                     },
                     year, month,day
-                ).show()
+                )
+
+                datePickerDialog.datePicker.minDate = System.currentTimeMillis()
+                datePickerDialog.show()
             }
         }
 
@@ -77,8 +80,10 @@ class TaskActivity : AppCompatActivity() {
                 descricaoEt.setText(it.descricao)
                 dataEt.setText(it.dataLimite)
 
+
+
                 val viewTask = intent.getBooleanExtra(EXTRA_VIEW_TASK, false)
-                if(viewTask) {
+                if(viewTask) run {
 
                     supportActionBar?.subtitle = "View task"
                     tituloEt.isEnabled = false
@@ -94,19 +99,20 @@ class TaskActivity : AppCompatActivity() {
         with(acb) {
 
             saveBt.setOnClickListener {
-                Task (
+                val task = Task (
                     receivedTask?.id?:hashCode(),
                     tituloEt.text.toString(),
                     descricaoEt.text.toString(),
                     dataEt.text.toString()
-                ).let {
-                    task ->
-                        Intent().apply {
-                            putExtra(EXTRA_TASK, task)
-                            setResult(RESULT_OK, this)
-                        }
+                )
+
+                val resultIntent = Intent().apply{
+                    putExtra(EXTRA_TASK, task)
                 }
+
+                setResult(RESULT_OK, resultIntent)
                 finish()
+
             }
 
         }

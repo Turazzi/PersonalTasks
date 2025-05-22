@@ -10,4 +10,9 @@
     <item
         android:id="@+id/edit_task_mi"
         android:title="@string/editar" />
+    <item
+        android:id="@+id/view_task_mi"
+        android:title="@string/visualizar" />
+
+
 </menu>

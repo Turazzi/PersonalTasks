@@ -61,9 +61,14 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
 
                 task?.let { receivedTask ->
                     val position = taskList.indexOfFirst {it.id == receivedTask.id}
-                    if (position == -1) {
-                        taskList.add(receivedTask)
+                    if (position != -1) {
+                        taskList[position] = receivedTask
                         taskAdapter.notifyItemChanged(position)
+                        mainController.modifyTask(receivedTask)
+                    }
+                    else {
+                        taskList.add(receivedTask)
+                        taskAdapter.notifyItemInserted(taskList.lastIndex)
                         mainController.insertTask(receivedTask)
                     }
                 }

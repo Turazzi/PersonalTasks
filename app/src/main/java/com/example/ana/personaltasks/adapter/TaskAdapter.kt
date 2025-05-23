@@ -10,24 +10,30 @@ import com.example.ana.personaltasks.databinding.TileTaskBinding
 import com.example.ana.personaltasks.model.Task
 import com.example.ana.personaltasks.ui.OnTaskClickListener
 
+//Classe da lista de tarefas, muito útil para mostrar diversos itens
 class TaskAdapter (
 
     private val taskList: MutableList<Task>,
-    private val onTaskClickListener: OnTaskClickListener
+    private val onTaskClickListener: OnTaskClickListener //para passar as instruções quando o usuário clica ou interage com algum item da lista
 
 ): RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
+    //Representa o layout individual de cada item da lista
     inner class TaskViewHolder(ttb: TileTaskBinding): RecyclerView.ViewHolder(ttb.root) {
 
+        //Referências aos valores de cada tarefa da lista
         val tituloTile: TextView = ttb.tituloTile
         val descricaoTile: TextView = ttb.descricaoTile
         val dataTile: TextView = ttb.dataTile
 
         init {
 
+            //Define o menu que aparece ao segurar item da lista
             ttb.root.setOnCreateContextMenuListener { menu, v, menuInfo ->
+                //Infla o menu
                 (onTaskClickListener as AppCompatActivity).menuInflater.inflate(R.menu.context_menu_main, menu)
 
+                //Configura o clique de cada item do menu e chama seus respectivos métodos
                 menu.findItem(R.id.view_task_mi).setOnMenuItemClickListener {
                     onTaskClickListener.onTaskClick(adapterPosition)
                     true
@@ -42,12 +48,14 @@ class TaskAdapter (
                 }
             }
 
+            //Define o clique normal, que não tem funcionalidade alguma aqyi no programa
             ttb.root.setOnClickListener {}
 
         }
 
     }
 
+    // Cria o ViewHolder inflando o layout TileTaskBinding para cada item da lista
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder = TaskViewHolder(
         TileTaskBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -58,10 +66,11 @@ class TaskAdapter (
 
     override fun getItemCount(): Int = taskList.size
 
+    //Liga os dados da tarefa à view do ViewHolder na posição especificada
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         taskList[position].let { task ->
             with(holder) {
-                tituloTile.text = task.titulo
+                tituloTile.text = task.titulo  //seta o título da tarefa no TextView
                 descricaoTile.text = task.descricao
                 dataTile.text = task.dataLimite
             }

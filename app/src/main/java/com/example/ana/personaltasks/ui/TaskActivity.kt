@@ -6,7 +6,9 @@ import android.icu.util.Calendar
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.ana.personaltasks.R
 import com.example.ana.personaltasks.databinding.ActivityTaskBinding
 import com.example.ana.personaltasks.model.Constant.EXTRA_TASK
 import com.example.ana.personaltasks.model.Constant.EXTRA_VIEW_TASK
@@ -22,6 +24,8 @@ class TaskActivity : AppCompatActivity() {
 
     }
 
+
+
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val calendar = Calendar.getInstance()
 
@@ -30,6 +34,9 @@ class TaskActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(acb.root)
+
+        val toolbarIcon = findViewById<ImageView>(R.id.toolbar_icon)
+        toolbarIcon.visibility = View.GONE
 
         setSupportActionBar(acb.toolbarIn.toolbar)
         supportActionBar?.subtitle = "Nova task"

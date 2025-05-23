@@ -3,9 +3,8 @@ package com.example.ana.personaltasks.ui
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -30,7 +29,6 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
 
     private val taskList: MutableList<Task> = mutableListOf()
 
-
     private val taskAdapter: TaskAdapter by lazy {
         TaskAdapter(taskList, this)
     }
@@ -42,33 +40,34 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(amb.root)
 
         setSupportActionBar(amb.toolbarIn.toolbar)
-        supportActionBar?.subtitle = getString(R.string.task_list)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        val addButton = findViewById<ImageView>(R.id.toolbar_icon)
+        addButton.setOnClickListener {
+            acResult.launch(Intent(this, TaskActivity::class.java))
+        }
 
         acResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if(result.resultCode == RESULT_OK) {
-
+            if (result.resultCode == RESULT_OK) {
                 val task = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     result.data?.getParcelableExtra(EXTRA_TASK, Task::class.java)
-                }
-                else {
+                } else {
                     result.data?.getParcelableExtra<Task>(EXTRA_TASK)
                 }
 
                 task?.let { receivedTask ->
-                    val position = taskList.indexOfFirst {it.id == receivedTask.id }
+                    val position = taskList.indexOfFirst { it.id == receivedTask.id }
                     if (position != -1) {
-                    taskList[position] = receivedTask
-                    mainController.modifyTask(receivedTask)
-                } else {
-                    taskList.add(receivedTask)
-                    mainController.insertTask(receivedTask)
-                }
-
+                        taskList[position] = receivedTask
+                        mainController.modifyTask(receivedTask)
+                    } else {
+                        taskList.add(receivedTask)
+                        mainController.insertTask(receivedTask)
+                    }
                     makeTaskListOrdenated()
                 }
             }
@@ -78,24 +77,17 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
         amb.taskRv.layoutManager = LinearLayoutManager(this)
 
         fillTaskList()
-
     }
 
     private fun fillTaskList() {
-
         Thread {
-
             makeTaskListOrdenated()
-
         }.start()
-
     }
 
     private fun makeTaskListOrdenated() {
         val tasks = mainController.getTasks()
-
         val ordenatedTasks = tasks.sortedWith(compareBy {
-
             try {
                 val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 dateFormat.parse(it.dataLimite) ?: Date(Long.MAX_VALUE)
@@ -115,25 +107,6 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
 
     private fun updateEmptyTextView() {
         amb.emptyTv.visibility = if (taskList.isEmpty()) View.VISIBLE else View.GONE
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
-            R.id.add_task_mi -> {
-                acResult.launch(Intent(this, TaskActivity::class.java))
-                true
-            }
-            else -> {false}
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onTaskClick(position: Int) {
@@ -158,6 +131,4 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
             acResult.launch(this)
         }
     }
-
-
 }

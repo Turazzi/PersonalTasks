@@ -33,7 +33,7 @@ https://github.com/user-attachments/assets/bbe29584-9f2d-4f6e-81b2-92ef8221f1ea
 ### Pré-requisitos
 
 - Android Studio (recomendado Arctic Fox ou superior)
-- SDK mínimo: API 24 (Android 7.0)
+- SDK mínimo: API 26 (Android 7.0)
 - Kotlin ativado no projeto
 
 ### Clonando o repositório

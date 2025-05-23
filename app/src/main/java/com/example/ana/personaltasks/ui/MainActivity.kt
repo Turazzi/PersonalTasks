@@ -23,18 +23,23 @@ import java.util.Locale
 
 class MainActivity : AppCompatActivity(), OnTaskClickListener {
 
+    // View Binding pra acessar a UI de forma segura e fácil
     private val amb: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
+    //Lista de tarefas que serão exibidas no RecyclerView
     private val taskList: MutableList<Task> = mutableListOf()
 
+    //Adapter que irá mostrar a lista de tarefas
     private val taskAdapter: TaskAdapter by lazy {
         TaskAdapter(taskList, this)
     }
 
+    // Launcher para abrir outras Activities e receber resultado (ex: criação/edição de tarefa)
     private lateinit var acResult: ActivityResultLauncher<Intent>
 
+    //Controller que encapsula a lógica de negócio - CRUD
     private val mainController: MainController by lazy {
         MainController(this)
     }
@@ -43,15 +48,19 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
         super.onCreate(savedInstanceState)
         setContentView(amb.root)
 
+        //Configura a toolbar sem título
         setSupportActionBar(amb.toolbarIn.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        // Pega o botão de adicionar tarefa na toolbar e configura clique para abrir a TaskActivity
         val addButton = findViewById<ImageView>(R.id.toolbar_icon)
         addButton.setOnClickListener {
             acResult.launch(Intent(this, TaskActivity::class.java))
         }
 
+        // Registra um listener para receber resultados da TaskActivity
         acResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            // Recupera a tarefa enviada de volta (usando Parcelable)
             if (result.resultCode == RESULT_OK) {
                 val task = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     result.data?.getParcelableExtra(EXTRA_TASK, Task::class.java)
@@ -60,6 +69,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
                 }
 
                 task?.let { receivedTask ->
+                    // Verifica se a tarefa já existe na lista pra atualizar ou adicionar
                     val position = taskList.indexOfFirst { it.id == receivedTask.id }
                     if (position != -1) {
                         taskList[position] = receivedTask
@@ -68,14 +78,17 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
                         taskList.add(receivedTask)
                         mainController.insertTask(receivedTask)
                     }
+                    // atualiza a lista ordenada na UI
                     makeTaskListOrdenated()
                 }
             }
         }
 
+        // Configura RecyclerView com adapter e layout manager linear vertical
         amb.taskRv.adapter = taskAdapter
         amb.taskRv.layoutManager = LinearLayoutManager(this)
 
+        //Inicia a lista de tarefas
         fillTaskList()
     }
 
@@ -87,6 +100,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
 
     private fun makeTaskListOrdenated() {
         val tasks = mainController.getTasks()
+        // Ordena tarefas pela data limite (parseando a string "dd/MM/yyyy")
         val ordenatedTasks = tasks.sortedWith(compareBy {
             try {
                 val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -100,7 +114,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
         taskList.addAll(ordenatedTasks)
 
         runOnUiThread {
-            taskAdapter.notifyDataSetChanged()
+            taskAdapter.notifyDataSetChanged() //atualiza a lista visual
             updateEmptyTextView()
         }
     }
@@ -109,6 +123,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
         amb.emptyTv.visibility = if (taskList.isEmpty()) View.VISIBLE else View.GONE
     }
 
+    // Interface OnTaskClickListener: usuário clicou na tarefa -> abre para visualizar
     override fun onTaskClick(position: Int) {
         Intent(this, TaskActivity::class.java).apply {
             putExtra(EXTRA_TASK, taskList[position])
@@ -117,6 +132,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
         }
     }
 
+    // Clique no menu remover: deleta do banco, remove da lista e atualiza UI
     override fun onRemoveTaskMenuItemClick(position: Int) {
         mainController.removeTask(taskList[position].id!!)
         taskList.removeAt(position)
@@ -125,6 +141,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
         Toast.makeText(this, "Task removida!", Toast.LENGTH_SHORT).show()
     }
 
+    // Clique no menu editar: abre a TaskActivity para edição da tarefa
     override fun onEditTaskMenuItemClick(position: Int) {
         Intent(this, TaskActivity::class.java).apply {
             putExtra(EXTRA_TASK, taskList[position])

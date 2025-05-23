@@ -9,6 +9,7 @@ import android.util.Log
 import com.example.ana.personaltasks.R
 import java.sql.SQLException
 
+// Implementação do DAO usando SQLite para persistência local das tarefas
 class TaskSqlite (context: Context): TaskDAO {
 
     companion object {
@@ -27,6 +28,7 @@ class TaskSqlite (context: Context): TaskDAO {
                 "$DATA_LIMITE_COLUMN TEXT NOT NULL );"
     }
 
+    // Banco de dados SQLite aberto/criado no modo privado do app
     private val taskDatabase: SQLiteDatabase = context.openOrCreateDatabase(
         TASK_DATABASE_FILE,
         MODE_PRIVATE,
@@ -35,6 +37,7 @@ class TaskSqlite (context: Context): TaskDAO {
 
     init {
         try {
+            // Executa o comando SQL para criar a tabela (se ainda não existir)
             taskDatabase.execSQL(CREATE_TASK_TABLE)
         }
         catch (se: SQLException) {
@@ -43,21 +46,22 @@ class TaskSqlite (context: Context): TaskDAO {
 
     }
 
-
+    // Insere uma nova tarefa na tabela e retorna o ID gerado (ou -1 se falhar)
     override fun createTask(task: Task): Long =
             taskDatabase.insert(TASK_TABLE, null, task.toContentValues())
 
+    // Busca uma tarefa pelo ID. Se não encontrar, retorna uma tarefa vazia (default)
     override fun retrieveTask(id: Int): Task {
         val cursor = taskDatabase.query(
-                true,
-        TASK_TABLE,
-        null,
-        "$ID_COLUMN = ?",
-        arrayOf(id.toString()),
-        null,
-        null,
-        null,
-        null
+            true,                // distinct: se true, elimina linhas duplicadas
+            TASK_TABLE,                 // table: nome da tabela onde buscar
+            null,               // columns: quais colunas buscar (null = todas)
+            "$ID_COLUMN = ?",  // selection: cláusula WHERE, ? é placeholder para parâmetro
+            arrayOf(id.toString()),     // selectionArgs: valores que substituem os '?' na seleção (protege contra SQL Injection)
+            null,               // groupBy: agrupar resultados (não usado aqui)
+            null,               // having: filtro para grupo (não usado)
+            null,               // orderBy: ordenação dos resultados (não usado)
+            null                 // limit: limite de resultados (não usado)
         )
 
         return if (cursor.moveToFirst())
@@ -80,16 +84,18 @@ class TaskSqlite (context: Context): TaskDAO {
     }
 
     override fun updateTask(task: Task) = taskDatabase.update(
-        TASK_TABLE,
-        task.toContentValues(),
-        "$ID_COLUMN = ?",
-        arrayOf(task.id.toString())
+        TASK_TABLE,                         // tabela onde atualizar
+        task.toContentValues(),              // valores que serão atualizados
+        "$ID_COLUMN = ?",          // cláusula WHERE para indicar qual registro atualizar
+        arrayOf(task.id.toString())         // valores que substituem o '?' na cláusula WHERE
+
     )
 
     override fun deleteTask(id: Int) = taskDatabase.delete(
-        TASK_TABLE,
-        "$ID_COLUMN = ?",
-        arrayOf(id.toString())
+        TASK_TABLE,                             // tabela onde deletar
+        "$ID_COLUMN = ?",           // cláusula WHERE para indicar qual registro deletar
+        arrayOf(id.toString())                   // valores que substituem o '?' na cláusula WHERE
+
     )
 
     private fun Task.toContentValues() = ContentValues().apply {

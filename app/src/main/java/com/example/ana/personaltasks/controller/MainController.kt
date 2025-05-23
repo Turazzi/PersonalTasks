@@ -5,6 +5,7 @@ import com.example.ana.personaltasks.model.TaskDAO
 import com.example.ana.personaltasks.model.TaskSqlite
 import com.example.ana.personaltasks.ui.MainActivity
 
+// Controlador principal que serve como intermediário entre a interface (MainActivity) e o acesso a dados (DAO)
 class MainController (mainActivity: MainActivity){
 
     private val taskDAO: TaskDAO = TaskSqlite(mainActivity)

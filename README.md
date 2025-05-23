@@ -36,14 +36,14 @@ git clone https://github.com/seu-usuario/personal-tasks.git
 cd personal-tasks
 ``` 
 
-###Rodando o projeto
+### Rodando o projeto
 
 1. Abra o Android Studio
 2. Vá em File > Open e selecione a pasta do projeto
 3. Sincronize o Gradle
 4. Rode o app em um emulador ou dispositivo físico
 
-###▶️ Usando o app
+### ▶️ Usando o app
 
 - Clique no ícone ➕ da barra superior para adicionar uma nova tarefa
 - Segure uma tarefa para abrir o menu de contexto:
@@ -52,7 +52,7 @@ cd personal-tasks
   - Remover apaga a tarefa
 - Se não houver tarefas, um texto "Nenhuma tarefa" será exibido
 
-###🛠️ Tecnologias
+### 🛠️ Tecnologias
 
 - Kotlin
 - SQLite

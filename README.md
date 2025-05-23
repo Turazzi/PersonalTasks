@@ -23,6 +23,13 @@ O projeto segue uma separação básica de responsabilidades:
 
 ## 📲 Como usar
 
+
+### Video da execução do aplicativo
+
+https://github.com/user-attachments/assets/bbe29584-9f2d-4f6e-81b2-92ef8221f1ea
+
+##
+
 ### Pré-requisitos
 
 - Android Studio (recomendado Arctic Fox ou superior)

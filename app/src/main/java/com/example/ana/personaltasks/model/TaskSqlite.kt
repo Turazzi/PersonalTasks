@@ -10,7 +10,7 @@ import com.example.ana.personaltasks.R
 import java.sql.SQLException
 
 // Implementação do DAO usando SQLite para persistência local das tarefas
-class TaskSqlite (context: Context): TaskDAO {
+class  TaskSqlite (context: Context): TaskDAO {
 
     companion object {
 
@@ -20,12 +20,14 @@ class TaskSqlite (context: Context): TaskDAO {
         private val TITULO_COLUMN = "titulo"
         private val DESCRICAO_COLUMN = "descricao"
         private val DATA_LIMITE_COLUMN = "data_limite"
+        private val CONCLUIDA_COLUMN = "concluida"
 
         val CREATE_TASK_TABLE = "CREATE TABLE IF NOT EXISTS $TASK_TABLE (" +
                 "$ID_COLUMN INTEGER NOT NULL PRIMARY KEY, " +
                 "$TITULO_COLUMN TEXT NOT NULL, " +
                 "$DESCRICAO_COLUMN TEXT NOT NULL, " +
-                "$DATA_LIMITE_COLUMN TEXT NOT NULL );"
+                "$DATA_LIMITE_COLUMN TEXT NOT NULL, " +
+                "$CONCLUIDA_COLUMN INTEGER NOT NULL DEFAULT 0);"
     }
 
     // Banco de dados SQLite aberto/criado no modo privado do app
@@ -104,6 +106,7 @@ class TaskSqlite (context: Context): TaskDAO {
         put(TITULO_COLUMN, titulo)
         put(DESCRICAO_COLUMN, descricao)
         put(DATA_LIMITE_COLUMN, dataLimite)
+        put(CONCLUIDA_COLUMN, if (concluida) 1 else 0)
 
     }
 
@@ -111,7 +114,8 @@ class TaskSqlite (context: Context): TaskDAO {
         getInt(getColumnIndexOrThrow(ID_COLUMN)),
         getString(getColumnIndexOrThrow(TITULO_COLUMN)),
         getString(getColumnIndexOrThrow(DESCRICAO_COLUMN)),
-        getString(getColumnIndexOrThrow(DATA_LIMITE_COLUMN))
+        getString(getColumnIndexOrThrow(DATA_LIMITE_COLUMN)),
+        getInt(getColumnIndexOrThrow(CONCLUIDA_COLUMN)) == 1
     )
 
 }

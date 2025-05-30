@@ -11,5 +11,6 @@ data class Task(
     var id: Int? = INVALID_TASK_ID,
     var titulo: String = " ",
     var descricao: String = " ",
-    var dataLimite: String = ""
+    var dataLimite: String = "",
+    var concluida: Boolean = false
 ) : Parcelable

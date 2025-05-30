@@ -1,7 +1,9 @@
 package com.example.ana.personaltasks.adapter
 
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +27,7 @@ class TaskAdapter (
         val tituloTile: TextView = ttb.tituloTile
         val descricaoTile: TextView = ttb.descricaoTile
         val dataTile: TextView = ttb.dataTile
+        val taskCompletedCb: CheckBox = ttb.statusCkb
 
         init {
 
@@ -67,14 +70,38 @@ class TaskAdapter (
     override fun getItemCount(): Int = taskList.size
 
     //Liga os dados da tarefa à view do ViewHolder na posição especificada
+
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        taskList[position].let { task ->
-            with(holder) {
-                tituloTile.text = task.titulo  //seta o título da tarefa no TextView
-                descricaoTile.text = task.descricao
-                dataTile.text = task.dataLimite
+        val task = taskList[position]
+//        taskList[position].let { task ->
+//            with(holder) {
+//                tituloTile.text = task.titulo  //seta o título da tarefa no TextView
+//                descricaoTile.text = task.descricao
+//                dataTile.text = task.dataLimite
+//            }
+//        }
+
+        holder.apply {
+            tituloTile.text = task.titulo
+            descricaoTile.text = task.descricao
+            dataTile.text = task.dataLimite
+
+            taskCompletedCb.setOnCheckedChangeListener(null)
+
+            taskCompletedCb.isChecked = task.concluida
+
+            if (task.concluida) {
+                tituloTile.paintFlags = tituloTile.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                tituloTile.paintFlags = tituloTile.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            }
+
+            taskCompletedCb.setOnCheckedChangeListener { _, isChecked ->
+                onTaskClickListener.onTaskCheckClick(adapterPosition, isChecked)
             }
         }
     }
+
+
 
 }

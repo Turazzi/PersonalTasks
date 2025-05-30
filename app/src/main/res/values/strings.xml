@@ -13,4 +13,5 @@
     <string name="cancelar">Cancelar</string>
     <string name="nenhuma_tarefa_por_aqui_ainda">Nenhuma tarefa por aqui ainda...</string>
     <string name="todo">TODO</string>
+    <string name="concluida">Concluida</string>
 </resources>

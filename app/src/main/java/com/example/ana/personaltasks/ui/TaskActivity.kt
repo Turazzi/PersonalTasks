@@ -83,6 +83,7 @@ class TaskActivity : AppCompatActivity() {
                 tituloEt.setText(it.titulo)
                 descricaoEt.setText(it.descricao)
                 dataEt.setText(it.dataLimite)
+                cbConcluida.isChecked = it.concluida
 
                 // Se for só visualização
                 val viewTask = intent.getBooleanExtra(EXTRA_VIEW_TASK, false)
@@ -94,6 +95,7 @@ class TaskActivity : AppCompatActivity() {
                     tituloEt.isEnabled = false
                     descricaoEt.isEnabled = false
                     dataEt.isEnabled = false
+                    cbConcluida.isEnabled = false
 
                     saveBt.visibility = View.GONE
                     cancelBt.visibility = View.GONE
@@ -120,6 +122,7 @@ class TaskActivity : AppCompatActivity() {
                 val titulo = tituloEt.text.toString().trim()
                 val descricao = descricaoEt.text.toString().trim()
 
+
                 if(titulo.isEmpty()) {
                     tituloEt.error = "Titulo é obrigatório"
                     tituloEt.requestFocus()
@@ -137,7 +140,8 @@ class TaskActivity : AppCompatActivity() {
                     receivedTask?.id?:hashCode(), // gera ID novo se não tiver vindo um
                     tituloEt.text.toString(),
                     descricaoEt.text.toString(),
-                    dataEt.text.toString()
+                    dataEt.text.toString(),
+                    cbConcluida.isChecked
                 )
 
                 // Envia a task de volta para MainActivity

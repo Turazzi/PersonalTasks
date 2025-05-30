@@ -1,5 +1,6 @@
 package com.example.ana.personaltasks.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -60,7 +61,6 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
 
         // Registra um listener para receber resultados da TaskActivity
         acResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            // Recupera a tarefa enviada de volta (usando Parcelable)
             if (result.resultCode == RESULT_OK) {
                 val task = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     result.data?.getParcelableExtra(EXTRA_TASK, Task::class.java)
@@ -69,27 +69,25 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
                 }
 
                 task?.let { receivedTask ->
-                    // Verifica se a tarefa já existe na lista pra atualizar ou adicionar
                     val position = taskList.indexOfFirst { it.id == receivedTask.id }
                     if (position != -1) {
                         taskList[position] = receivedTask
                         mainController.modifyTask(receivedTask)
-                    } else {
+                    }
+                    else {
                         taskList.add(receivedTask)
                         mainController.insertTask(receivedTask)
                     }
-                    // atualiza a lista ordenada na UI
                     makeTaskListOrdenated()
                 }
             }
         }
-
-        // Configura RecyclerView com adapter e layout manager linear vertical
         amb.taskRv.adapter = taskAdapter
         amb.taskRv.layoutManager = LinearLayoutManager(this)
 
         //Inicia a lista de tarefas
         fillTaskList()
+
     }
 
     private fun fillTaskList() {
@@ -98,6 +96,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
         }.start()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun makeTaskListOrdenated() {
         val tasks = mainController.getTasks()
         // Ordena tarefas pela data limite (parseando a string "dd/MM/yyyy")
@@ -147,5 +146,12 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
             putExtra(EXTRA_TASK, taskList[position])
             acResult.launch(this)
         }
+    }
+
+    override fun onTaskCheckClick(position: Int, isChecked: Boolean) {
+        val task = taskList[position]
+        task.concluida = isChecked
+        mainController.modifyTask(task)
+        taskAdapter.notifyItemChanged(position)
     }
 }

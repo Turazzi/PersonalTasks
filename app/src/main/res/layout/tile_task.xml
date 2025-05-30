@@ -21,6 +21,12 @@
         android:padding="12dp"
         android:gravity="center_vertical">
 
+        <CheckBox
+            android:id="@+id/status_ckb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"/>
+
         <ImageView
             android:id="@+id/icon_tile"
             android:layout_width="40dp"

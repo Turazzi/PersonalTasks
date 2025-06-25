@@ -13,4 +13,14 @@
     <string name="cancelar">Cancelar</string>
     <string name="nenhuma_tarefa_por_aqui_ainda">Nenhuma tarefa por aqui ainda...</string>
     <string name="todo">TODO</string>
+    <string name="desenvolvido_por_ana_livia">Desenvolvido por Ana Livia</string>
+    <string name="vers_o_1_0">Versão 1.0</string>
+    <string name="dado">Dado</string>
+    <string name="sobre">Sobre</string>
+    <string name="discar">Discar</string>
+    <string name="navegador">Navegador</string>
+    <string name="compartilhar">Compartilhar</string>
+    <string name="map">Map</string>
+    <string name="tarefas">Tarefas: </string>
+    <string name="pesquisar">Pesquisar</string>
 </resources>

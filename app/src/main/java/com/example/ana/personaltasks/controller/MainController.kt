@@ -15,5 +15,6 @@ class MainController (mainActivity: MainActivity){
     fun getTasks() = taskDAO.retrieveTasks()
     fun modifyTask(task: Task) = taskDAO.updateTask(task)
     fun removeTask(id: Int) = taskDAO.deleteTask(id)
+    fun findTasks(query: String) = taskDAO.searchTasks(query)
 
 }

@@ -20,12 +20,14 @@ class TaskSqlite (context: Context): TaskDAO {
         private val TITULO_COLUMN = "titulo"
         private val DESCRICAO_COLUMN = "descricao"
         private val DATA_LIMITE_COLUMN = "data_limite"
+        private val CONCLUIDA_COLUMN = "concluida"
 
         val CREATE_TASK_TABLE = "CREATE TABLE IF NOT EXISTS $TASK_TABLE (" +
                 "$ID_COLUMN INTEGER NOT NULL PRIMARY KEY, " +
                 "$TITULO_COLUMN TEXT NOT NULL, " +
                 "$DESCRICAO_COLUMN TEXT NOT NULL, " +
-                "$DATA_LIMITE_COLUMN TEXT NOT NULL );"
+                "$DATA_LIMITE_COLUMN TEXT NOT NULL, " +
+                "$CONCLUIDA_COLUMN INTEGER NOT NULL DEFAULT 0);"
     }
 
     // Banco de dados SQLite aberto/criado no modo privado do app
@@ -50,6 +52,16 @@ class TaskSqlite (context: Context): TaskDAO {
     override fun createTask(task: Task): Long =
             taskDatabase.insert(TASK_TABLE, null, task.toContentValues())
 
+    private fun Task.toContentValues() = ContentValues().apply {
+
+        put(ID_COLUMN, id)
+        put(TITULO_COLUMN, titulo)
+        put(DESCRICAO_COLUMN, descricao)
+        put(DATA_LIMITE_COLUMN, dataLimite)
+        put(CONCLUIDA_COLUMN, if (concluida) 1 else 0)
+
+    }
+
     // Busca uma tarefa pelo ID. Se não encontrar, retorna uma tarefa vazia (default)
     override fun retrieveTask(id: Int): Task {
         val cursor = taskDatabase.query(
@@ -71,6 +83,14 @@ class TaskSqlite (context: Context): TaskDAO {
             Task()
 
     }
+
+    private fun Cursor.toTask() = Task(
+        getInt(getColumnIndexOrThrow(ID_COLUMN)),
+        getString(getColumnIndexOrThrow(TITULO_COLUMN)),
+        getString(getColumnIndexOrThrow(DESCRICAO_COLUMN)),
+        getString(getColumnIndexOrThrow(DATA_LIMITE_COLUMN)),
+        getInt(getColumnIndexOrThrow(CONCLUIDA_COLUMN)) == 1
+    )
 
     override fun retrieveTasks(): MutableList<Task> {
         val taskList: MutableList<Task> = mutableListOf()
@@ -98,20 +118,21 @@ class TaskSqlite (context: Context): TaskDAO {
 
     )
 
-    private fun Task.toContentValues() = ContentValues().apply {
+    override fun searchTasks(query: String): MutableList<Task> {
 
-        put(ID_COLUMN, id)
-        put(TITULO_COLUMN, titulo)
-        put(DESCRICAO_COLUMN, descricao)
-        put(DATA_LIMITE_COLUMN, dataLimite)
+        val taskList: MutableList<Task> = mutableListOf()
+
+        val cursor = taskDatabase.rawQuery(
+            "SELECT * FROM $TASK_TABLE WHERE $TITULO_COLUMN LIKE ?;",
+            arrayOf("%$query%")
+        )
+
+        while (cursor.moveToNext()) {
+            taskList.add(cursor.toTask())
+        }
+        cursor.close()
+        return taskList
 
     }
-
-    private fun Cursor.toTask() = Task(
-        getInt(getColumnIndexOrThrow(ID_COLUMN)),
-        getString(getColumnIndexOrThrow(TITULO_COLUMN)),
-        getString(getColumnIndexOrThrow(DESCRICAO_COLUMN)),
-        getString(getColumnIndexOrThrow(DATA_LIMITE_COLUMN))
-    )
 
 }

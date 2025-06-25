@@ -7,4 +7,5 @@ interface TaskDAO {
     fun retrieveTasks(): MutableList<Task>
     fun updateTask(task: Task): Int
     fun deleteTask(id: Int): Int
+    fun searchTasks(query: String): MutableList<Task>
 }

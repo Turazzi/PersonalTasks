@@ -1,10 +1,11 @@
 package com.example.ana.personaltasks.ui
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
@@ -18,6 +19,7 @@ import com.example.ana.personaltasks.databinding.ActivityDeletedTasksBinding
 import com.example.ana.personaltasks.model.Constant
 import com.example.ana.personaltasks.model.Task
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -35,6 +37,9 @@ class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener, SearchView
         MainController()
     }
     private var currentSearchQuery: String? = null
+    // Variável para filtro de data única
+    private var selectedDateFilter: String? = null
+    private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,17 +54,16 @@ class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener, SearchView
         binding.deletedTasksRv.adapter = taskAdapter
 
         mainController.getDeletedTasks { tasks ->
-            Log.d("DeletedTasks", "Dados recebidos do Firebase: ${tasks.size} itens")
             val sortedTasks = tasks.sortedWith(compareBy {
                 try {
-                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(it.dataLimite) ?: Date(Long.MAX_VALUE)
+                    dateFormat.parse(it.dataLimite) ?: Date(Long.MAX_VALUE)
                 } catch (e: Exception) {
                     Date(Long.MAX_VALUE)
                 }
             })
             allDeletedTasks.clear()
             allDeletedTasks.addAll(sortedTasks)
-            updateDisplayedList(currentSearchQuery)
+            filterDeletedTasks()
         }
     }
 
@@ -68,7 +72,43 @@ class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener, SearchView
         val searchItem = menu?.findItem(R.id.action_search_deleted)
         val searchView = searchItem?.actionView as? SearchView
         searchView?.setOnQueryTextListener(this)
+
+        searchView?.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                selectedDateFilter = null
+            }
+        }
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_filter_by_date_deleted -> {
+                showDatePickerDialog()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(this, { _, y, m, d ->
+            calendar.set(y, m, d)
+            selectedDateFilter = dateFormat.format(calendar.time)
+            currentSearchQuery = null
+            filterDeletedTasks()
+        }, year, month, day)
+
+        datePickerDialog.setButton(DatePickerDialog.BUTTON_NEUTRAL, "Limpar filtro") { _, _ ->
+            selectedDateFilter = null
+            filterDeletedTasks()
+        }
+        datePickerDialog.show()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -76,49 +116,32 @@ class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener, SearchView
         return true
     }
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        return false
-    }
+    override fun onQueryTextSubmit(query: String?): Boolean = false
 
     override fun onQueryTextChange(newText: String?): Boolean {
         currentSearchQuery = newText
-        updateDisplayedList(newText)
+        filterDeletedTasks()
         return true
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun updateDisplayedList(query: String?) {
-        Log.d("DeletedTasks", "Filtrando a lista com o texto: '$query'")
-
-        // 1. Determina a lista a ser exibida (filtrada ou completa)
-        val listToShow = if (query.isNullOrBlank()) {
-            allDeletedTasks // Mostra tudo se a busca for vazia
-        } else {
-            // Cria uma nova lista com os resultados do filtro
-            val filteredList = mutableListOf<Task>()
-            for (task in allDeletedTasks) {
-                val matchesTitle = task.titulo.contains(query, ignoreCase = true)
-
-                // Log para cada tarefa para ver porque ela foi ou não incluída
-                Log.d("DeletedTasks", "Verificando Tarefa: '${task.titulo}'. Título corresponde? $matchesTitle.")
-
-                if (matchesTitle) {
-                    filteredList.add(task)
+    private fun filterDeletedTasks() {
+        val listToShow = when {
+            selectedDateFilter != null -> {
+                allDeletedTasks.filter { it.dataLimite == selectedDateFilter }
+            }
+            !currentSearchQuery.isNullOrBlank() -> {
+                allDeletedTasks.filter {
+                    it.titulo.contains(currentSearchQuery!!, ignoreCase = true) ||
+                            it.descricao.contains(currentSearchQuery!!, ignoreCase = true)
                 }
             }
-            filteredList
+            else -> allDeletedTasks
         }
-
-        Log.d("DeletedTasks", "A lista a ser exibida tem ${listToShow.size} itens.")
-
-        // 2. Atualiza a lista do adapter e notifica a mudança
         deletedTaskList.clear()
         deletedTaskList.addAll(listToShow)
         taskAdapter.notifyDataSetChanged()
-
-        // 3. Atualiza a mensagem de "lista vazia"
-        binding.emptyDeletedTv.visibility =
-            if (deletedTaskList.isEmpty()) View.VISIBLE else View.GONE
+        binding.emptyDeletedTv.visibility = if (deletedTaskList.isEmpty()) View.VISIBLE else View.GONE
     }
 
 

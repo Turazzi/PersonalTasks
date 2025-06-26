@@ -10,6 +10,12 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <item
+        android:id="@+id/action_filter_by_date"
+        android:title="@string/filtrar_por_data"
+        android:icon="@android:drawable/ic_menu_my_calendar"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/deleted_tasks_mi"
         android:title="@string/tarefas_exclu_das"
         app:showAsAction="never"/>

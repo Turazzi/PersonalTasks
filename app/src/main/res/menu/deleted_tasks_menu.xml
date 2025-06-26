@@ -9,4 +9,10 @@
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
+    <item
+        android:id="@+id/action_filter_by_date_deleted"
+        android:title="@string/filtrar_por_data"
+        android:icon="@android:drawable/ic_menu_my_calendar"
+        app:showAsAction="ifRoom" />
+
 </menu>

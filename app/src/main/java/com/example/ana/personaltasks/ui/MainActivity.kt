@@ -1,6 +1,7 @@
 package com.example.ana.personaltasks.ui
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -22,9 +23,9 @@ import com.example.ana.personaltasks.model.Constant
 import com.example.ana.personaltasks.model.Task
 import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.concurrent.atomic.AtomicReference
 
 class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQueryTextListener {
 
@@ -43,8 +44,10 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQuer
     private val auth: FirebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
-    // Para guardar o texto da busca atual
     private var currentSearchQuery: String? = null
+    // Variável para filtro de data única
+    private var selectedDateFilter: String? = null
+    private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,15 +84,14 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQuer
         mainController.getTasks { tasks ->
             val sortedTasks = tasks.sortedWith(compareBy {
                 try {
-                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(it.dataLimite) ?: Date(Long.MAX_VALUE)
+                    dateFormat.parse(it.dataLimite) ?: Date(Long.MAX_VALUE)
                 } catch (e: Exception) {
                     Date(Long.MAX_VALUE)
                 }
             })
             allTasks.clear()
             allTasks.addAll(sortedTasks)
-            // Filtra a lista com a busca atual (que pode ser nula)
-            filterTasks(currentSearchQuery)
+            filterTasks()
         }
     }
 
@@ -98,36 +100,21 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQuer
         val searchItem = menu?.findItem(R.id.action_search)
         val searchView = searchItem?.actionView as? SearchView
         searchView?.setOnQueryTextListener(this)
-        return true
-    }
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        return false
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        currentSearchQuery = newText
-        filterTasks(newText)
-        return true
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun filterTasks(query: String?) {
-        val filteredList = if (query.isNullOrEmpty()) {
-            allTasks
-        } else {
-            allTasks.filter {
-                it.titulo.contains(query, ignoreCase = true)
+        searchView?.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                selectedDateFilter = null
             }
         }
-        taskList.clear()
-        taskList.addAll(filteredList)
-        taskAdapter.notifyDataSetChanged()
-        updateEmptyTextView()
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_filter_by_date -> {
+                showDatePickerDialog()
+                true
+            }
             R.id.deleted_tasks_mi -> {
                 startActivity(Intent(this, DeletedTasksActivity::class.java))
                 true
@@ -140,6 +127,54 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQuer
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(this, { _, y, m, d ->
+            calendar.set(y, m, d)
+            selectedDateFilter = dateFormat.format(calendar.time)
+            currentSearchQuery = null
+            filterTasks()
+        }, year, month, day)
+
+        datePickerDialog.setButton(DatePickerDialog.BUTTON_NEUTRAL, "Limpar filtro") { _, _ ->
+            selectedDateFilter = null
+            filterTasks()
+        }
+        datePickerDialog.show()
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean = false
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        currentSearchQuery = newText
+        filterTasks()
+        return true
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun filterTasks() {
+        val listToShow = when {
+            selectedDateFilter != null -> {
+                allTasks.filter { it.dataLimite == selectedDateFilter }
+            }
+            !currentSearchQuery.isNullOrBlank() -> {
+                allTasks.filter {
+                    it.titulo.contains(currentSearchQuery!!, ignoreCase = true) ||
+                            it.descricao.contains(currentSearchQuery!!, ignoreCase = true)
+                }
+            }
+            else -> allTasks
+        }
+        taskList.clear()
+        taskList.addAll(listToShow)
+        taskAdapter.notifyDataSetChanged()
+        updateEmptyTextView()
     }
 
     private fun updateEmptyTextView() {

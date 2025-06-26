@@ -13,19 +13,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PersonalTasks"
         tools:targetApi="31">
+        
         <activity
-            android:name=".ui.AboutActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.MainActivity" />
         <activity android:name=".ui.TaskActivity" />
+        <activity
+            android:name=".ui.DeletedTaskActivity"
+            android:label="@string/tarefas_excluidas"
+            android:parentActivityName=".ui.MainActivity" />
     </application>
 
 </manifest>

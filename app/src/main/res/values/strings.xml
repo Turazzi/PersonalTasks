@@ -34,7 +34,7 @@
     <string name="tarefas">Tarefas</string>
     <string name="sobre">Sobre</string>
     <string name="pesquisar">Pesquisar</string>
-    <string name="tarefas_exclu_das">tarefas excluídas</string>
+    <string name="tarefas_exclu_das">Tarefas excluídas</string>
     <string name="nenhuma_tarefa_na_lixeira">Nenhuma tarefa na lixeira.</string>
 
 </resources>

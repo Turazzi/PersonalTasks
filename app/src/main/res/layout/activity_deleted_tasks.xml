@@ -20,7 +20,7 @@
         android:id="@+id/empty_deleted_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nenhuma tarefa na lixeira."
+        android:text="@string/nenhuma_tarefa_na_lixeira"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

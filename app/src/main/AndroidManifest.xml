@@ -26,7 +26,7 @@
         <activity android:name=".ui.MainActivity" />
         <activity android:name=".ui.TaskActivity" />
         <activity
-            android:name=".ui.DeletedTaskActivity"
+            android:name=".ui.DeletedTasksActivity"
             android:label="@string/tarefas_excluidas"
             android:parentActivityName=".ui.MainActivity" />
     </application>

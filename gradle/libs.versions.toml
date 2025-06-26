@@ -15,6 +15,7 @@ roomVersion = "2.7.1"
 coroutinesVersion = "1.10.2"
 googleServices = "4.4.2"
 firebaseVersion = "33.14.0"
+firebaseAuthKtx = "23.2.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,6 +33,7 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseVersion" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-database-ktx =  { group = "com.google.firebase", name = "firebase-database-ktx" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

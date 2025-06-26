@@ -4,9 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.ana.personaltasks.R
 import com.example.ana.personaltasks.adapter.TaskAdapter
 import com.example.ana.personaltasks.controller.MainController
 import com.example.ana.personaltasks.databinding.ActivityDeletedTasksBinding
@@ -33,7 +36,13 @@ class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        // Configuração da Toolbar
+        setSupportActionBar(binding.toolbarIn.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        // Esconde o ícone de adicionar tarefa
+        binding.toolbarIn.toolbar.findViewById<ImageView>(R.id.toolbar_icon).visibility = View.GONE
 
         binding.deletedTasksRv.layoutManager = LinearLayoutManager(this)
         binding.deletedTasksRv.adapter = taskAdapter
@@ -41,6 +50,11 @@ class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener {
         mainController.getDeletedTasks { tasks ->
             updateDeletedTaskList(tasks)
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return true
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -82,4 +96,3 @@ class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener {
     override fun onEditTaskMenuItemClick(position: Int) {}
     override fun onTaskCheckClick(position: Int, isChecked: Boolean) {}
 }
-

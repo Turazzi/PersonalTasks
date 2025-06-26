@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ana.personaltasks.R
 import com.example.ana.personaltasks.adapter.TaskAdapter
@@ -23,13 +24,15 @@ import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.atomic.AtomicReference
 
-class MainActivity : AppCompatActivity(), OnTaskClickListener {
+class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQueryTextListener {
 
     private val amb: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-    private val taskList: MutableList<Task> = mutableListOf()
+    private var taskList: MutableList<Task> = mutableListOf()
+    private val allTasks: MutableList<Task> = mutableListOf()
     private val taskAdapter: TaskAdapter by lazy {
         TaskAdapter(taskList, this)
     }
@@ -40,6 +43,8 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
     private val auth: FirebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
+    // Para guardar o texto da busca atual
+    private var currentSearchQuery: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,15 +78,52 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
         amb.taskRv.adapter = taskAdapter
         amb.taskRv.layoutManager = LinearLayoutManager(this)
 
-        // Escuta por mudanças nas tarefas em tempo real
         mainController.getTasks { tasks ->
-            updateTaskList(tasks)
+            val sortedTasks = tasks.sortedWith(compareBy {
+                try {
+                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(it.dataLimite) ?: Date(Long.MAX_VALUE)
+                } catch (e: Exception) {
+                    Date(Long.MAX_VALUE)
+                }
+            })
+            allTasks.clear()
+            allTasks.addAll(sortedTasks)
+            // Filtra a lista com a busca atual (que pode ser nula)
+            filterTasks(currentSearchQuery)
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
+        val searchItem = menu?.findItem(R.id.action_search)
+        val searchView = searchItem?.actionView as? SearchView
+        searchView?.setOnQueryTextListener(this)
         return true
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return false
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        currentSearchQuery = newText
+        filterTasks(newText)
+        return true
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun filterTasks(query: String?) {
+        val filteredList = if (query.isNullOrEmpty()) {
+            allTasks
+        } else {
+            allTasks.filter {
+                it.titulo.contains(query, ignoreCase = true)
+            }
+        }
+        taskList.clear()
+        taskList.addAll(filteredList)
+        taskAdapter.notifyDataSetChanged()
+        updateEmptyTextView()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -100,21 +142,6 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun updateTaskList(tasks: List<Task>) {
-        val ordenatedTasks = tasks.sortedWith(compareBy {
-            try {
-                SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(it.dataLimite) ?: Date(Long.MAX_VALUE)
-            } catch (e: Exception) {
-                Date(Long.MAX_VALUE)
-            }
-        })
-        taskList.clear()
-        taskList.addAll(ordenatedTasks)
-        taskAdapter.notifyDataSetChanged()
-        updateEmptyTextView()
-    }
-
     private fun updateEmptyTextView() {
         amb.emptyTv.visibility = if (taskList.isEmpty()) View.VISIBLE else View.GONE
     }
@@ -127,7 +154,6 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
         startActivity(intent)
     }
 
-    // Agora move a tarefa para a lixeira em vez de apagar
     override fun onRemoveTaskMenuItemClick(position: Int) {
         val task = taskList[position]
         mainController.removeTask(task)
@@ -147,5 +173,5 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener {
         mainController.modifyTask(task)
     }
 
-    override fun onReactivateTaskMenuItemClick(position: Int) {} // Não usado aqui
+    override fun onReactivateTaskMenuItemClick(position: Int) {}
 }

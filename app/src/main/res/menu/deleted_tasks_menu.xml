@@ -3,18 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/action_search_deleted"
         android:title="@string/pesquisar"
         android:icon="@android:drawable/ic_menu_search"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
-    <item
-        android:id="@+id/deleted_tasks_mi"
-        android:title="@string/tarefas_exclu_das"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/logout_mi"
-        android:title="@string/sair"
-        app:showAsAction="never"/>
 </menu>

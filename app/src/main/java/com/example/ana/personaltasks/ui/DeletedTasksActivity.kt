@@ -23,36 +23,50 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
+//Define que essa tela ouvinte de cliques  e de pesquisa
 class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener, SearchView.OnQueryTextListener {
 
+    //Ponte segura para os componentes visuais da tela
     private val binding: ActivityDeletedTasksBinding by lazy {
         ActivityDeletedTasksBinding.inflate(layoutInflater)
     }
+
+    //guarda a lista que vai ser mostrada na tela
     private val deletedTaskList: MutableList<Task> = mutableListOf()
+    //guarda todos os dados que chegam do firebase
     private val allDeletedTasks: MutableList<Task> = mutableListOf()
+
+    //Mesma utilizada na main, mas configurada para aparecer so a lista de tasks deletadas
     private val taskAdapter: TaskAdapter by lazy {
         TaskAdapter(deletedTaskList, this, isDeletedList = true)
     }
+
+    //Usado para pedir a lista de tarefas deletadas
     private val mainController: MainController by lazy {
         MainController()
     }
+
+    //guardam o estado atual dos filtros
     private var currentSearchQuery: String? = null
-    // Variável para filtro de data única
     private var selectedDateFilter: String? = null
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        //configura a toolbar
         setSupportActionBar(binding.toolbarIn.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        //tira o icone de + da toolbar
         binding.toolbarIn.toolbar.findViewById<ImageView>(R.id.toolbar_icon).visibility = View.GONE
 
         binding.deletedTasksRv.layoutManager = LinearLayoutManager(this)
         binding.deletedTasksRv.adapter = taskAdapter
 
+        //Chama as tasks deletadas, guarda na lista e chama para exibição
         mainController.getDeletedTasks { tasks ->
             val sortedTasks = tasks.sortedWith(compareBy {
                 try {
@@ -67,6 +81,7 @@ class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener, SearchView
         }
     }
 
+    //infla o menu da tela de deletadas, com os icones de pesquisa
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.deleted_tasks_menu, menu)
         val searchItem = menu?.findItem(R.id.action_search_deleted)
@@ -81,6 +96,7 @@ class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener, SearchView
         return true
     }
 
+    //Chamado quando o usuário clica em um ícone do menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_filter_by_date_deleted -> {
@@ -91,6 +107,7 @@ class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener, SearchView
         }
     }
 
+    //Mostra uma caixa de diálogo para o usuário selecionar uma data, quando é selecionada a função de filtro é chamada para mostrar so as tarefas pedidas na pesquisa
     private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
@@ -118,12 +135,14 @@ class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener, SearchView
 
     override fun onQueryTextSubmit(query: String?): Boolean = false
 
+    //é chamada a cada letra digitada na barra de pesquisa
     override fun onQueryTextChange(newText: String?): Boolean {
         currentSearchQuery = newText
         filterDeletedTasks()
         return true
     }
 
+    //olha para os filtros e decide qual subconjunto de lista de tarefas deve ser chamado
     @SuppressLint("NotifyDataSetChanged")
     private fun filterDeletedTasks() {
         val listToShow = when {
@@ -145,6 +164,7 @@ class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener, SearchView
     }
 
 
+    //Define o que fazer em um clique curto - mostra os detalhes da tarefa
     override fun onTaskClick(position: Int) {
         val intent = Intent(this, TaskActivity::class.java).apply {
             putExtra(Constant.EXTRA_TASK, deletedTaskList[position])
@@ -153,12 +173,15 @@ class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener, SearchView
         startActivity(intent)
     }
 
+    //Move a tarefa novamente para a main - reativando-a
     override fun onReactivateTaskMenuItemClick(position: Int) {
         val task = deletedTaskList[position]
         mainController.reactivateTask(task)
         Toast.makeText(this, "Tarefa reativada!", Toast.LENGTH_SHORT).show()
     }
 
+
+    //opcoes que nao sao usadas aqui
     override fun onRemoveTaskMenuItemClick(position: Int) {}
     override fun onEditTaskMenuItemClick(position: Int) {}
     override fun onTaskCheckClick(position: Int, isChecked: Boolean) {}

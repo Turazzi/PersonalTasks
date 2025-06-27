@@ -24,6 +24,7 @@ class TaskActivity : AppCompatActivity() {
     }
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val calendar: Calendar = Calendar.getInstance()
+    //Guarda a tarefa que foi recebida pela requisição
     private var receivedTask: Task? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,18 +32,22 @@ class TaskActivity : AppCompatActivity() {
         setContentView(acb.root)
 
         findViewById<ImageView>(R.id.toolbar_icon).visibility = View.GONE
+        //configura a tollbar com um botao de voltar
         setSupportActionBar(acb.toolbarIn.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        //define a data atual no campo de data e configura o clique pra abrir o calendario
         acb.dataEt.setText(dateFormat.format(calendar.time))
         acb.dataEt.setOnClickListener { showDatePickerDialog() }
 
+        //pega a intent e procura por um extra com a chave extra_task  - se encontra é armazenada em receivedTask
         receivedTask = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(EXTRA_TASK, Task::class.java)
         } else {
             intent.getParcelableExtra(EXTRA_TASK)
         }
 
+        //Define os campos a partir do que foi selecionado na view - editar ou visualizar
         if (receivedTask != null) {
             acb.tituloEt.setText(receivedTask!!.titulo)
             acb.descricaoEt.setText(receivedTask!!.descricao)
@@ -82,6 +87,7 @@ class TaskActivity : AppCompatActivity() {
         }
     }
 
+    //define tudo como desabilitado, apenas para visualizacao
     private fun setupViewOnlyMode() {
         supportActionBar?.subtitle = "Detalhes da Tarefa"
         acb.tituloEt.isEnabled = false

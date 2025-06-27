@@ -32,20 +32,26 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQuer
     private val amb: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
+
     private var taskList: MutableList<Task> = mutableListOf()
     private val allTasks: MutableList<Task> = mutableListOf()
+
     private val taskAdapter: TaskAdapter by lazy {
         TaskAdapter(taskList, this)
     }
+
     private lateinit var acResult: ActivityResultLauncher<Intent>
+
     private val mainController: MainController by lazy {
         MainController()
     }
+
+    //Autenticação utilizada para dar logout
     private val auth: FirebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
+
     private var currentSearchQuery: String? = null
-    // Variável para filtro de data única
     private var selectedDateFilter: String? = null
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
@@ -60,7 +66,9 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQuer
             acResult.launch(Intent(this, TaskActivity::class.java))
         }
 
+        //define o que acontece quando a taskActivity se fecha e retorna um resultado
         acResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            // se retornou com sucesso
             if (result.resultCode == RESULT_OK) {
                 val task = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     result.data?.getParcelableExtra(Constant.EXTRA_TASK, Task::class.java)
@@ -68,6 +76,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQuer
                     result.data?.getParcelableExtra<Task>(Constant.EXTRA_TASK)
                 }
                 task?.let { receivedTask ->
+                    //verifica se a tarefa é nova  ou se é atualização
                     val isNewTask = taskList.find { it.id == receivedTask.id } == null
                     if (isNewTask) {
                         mainController.insertTask(receivedTask)
@@ -82,6 +91,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQuer
         amb.taskRv.layoutManager = LinearLayoutManager(this)
 
         mainController.getTasks { tasks ->
+            //pega as tarefas, ordena por data
             val sortedTasks = tasks.sortedWith(compareBy {
                 try {
                     dateFormat.parse(it.dataLimite) ?: Date(Long.MAX_VALUE)
@@ -89,6 +99,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQuer
                     Date(Long.MAX_VALUE)
                 }
             })
+            //limpa a lista e preenche com os dados novos
             allTasks.clear()
             allTasks.addAll(sortedTasks)
             filterTasks()
@@ -96,6 +107,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQuer
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        //infla o menu main
         menuInflater.inflate(R.menu.main_menu, menu)
         val searchItem = menu?.findItem(R.id.action_search)
         val searchView = searchItem?.actionView as? SearchView
@@ -109,6 +121,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQuer
         return true
     }
 
+    //Define o que deve ser feito a partir de onde o usuario clicou
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_filter_by_date -> {

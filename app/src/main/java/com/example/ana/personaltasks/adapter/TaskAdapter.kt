@@ -12,12 +12,15 @@ import com.example.ana.personaltasks.databinding.TileTaskBinding
 import com.example.ana.personaltasks.model.Task
 import com.example.ana.personaltasks.ui.OnTaskClickListener
 
-//Classe da lista de tarefas, muito útil para mostrar diversos itens
 class  TaskAdapter (
+    //Instruções iniciais
+    //Lista de tarefas que serão exibidas
     private val taskList: MutableList<Task>,
+    //Notifica a classe se o usuário fizer alguma coisa
     private val onTaskClickListener: OnTaskClickListener,
-    // Flag para saber qual menu de contexto inflar (principal ou lixeira)
+    //Permite que o adapter se comporte de maneiras diferentes - lida com as apagadas e com as "normais"
     private val isDeletedList: Boolean = false
+    //Indica que a classe herda todas as funcionalidades e responsabilidades do adaptador
 ) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
     inner class TaskViewHolder(ttb: TileTaskBinding) : RecyclerView.ViewHolder(ttb.root) {
@@ -26,11 +29,13 @@ class  TaskAdapter (
         val dataTile: TextView = ttb.dataTile
         val taskCompletedCb: CheckBox = ttb.taskCompletedCb
 
+        //Executado assim que um viewHolder é criado , é aqui que configura os listeners que são os mesmos para todos os itens
         init {
+            //configura o que acontece quando da um clique longo no item
             itemView.setOnCreateContextMenuListener { menu, _, _ ->
                 val activity = onTaskClickListener as AppCompatActivity
+                //se for true, ele infla a view da lixeira
                 if (isDeletedList) {
-                    // Se estiver na lixeira, infla o menu com a opção de reativar
                     activity.menuInflater.inflate(R.menu.context_menu_deleted, menu)
                     menu.findItem(R.id.reactivate_task_mi)?.setOnMenuItemClickListener {
                         onTaskClickListener.onReactivateTaskMenuItemClick(adapterPosition)
@@ -40,8 +45,8 @@ class  TaskAdapter (
                         onTaskClickListener.onTaskClick(adapterPosition)
                         true
                     }
+                    //se for false, ele infla a view da main
                 } else {
-                    // Senão, infla o menu principal
                     activity.menuInflater.inflate(R.menu.context_menu_main, menu)
                     menu.findItem(R.id.view_task_mi)?.setOnMenuItemClickListener {
                         onTaskClickListener.onTaskClick(adapterPosition)
@@ -60,30 +65,35 @@ class  TaskAdapter (
         }
     }
 
+    //Cria um view holder novo e vazio
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder = TaskViewHolder(
         TileTaskBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
     override fun getItemCount(): Int = taskList.size
 
+    //Pega os dados de uma tarefa específica e "amarra" (bind) aos componentes visuais da view
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val task = taskList[position]
+        //Seta os atributos da tarefa na view
         holder.apply {
             tituloTile.text = task.titulo
             descricaoTile.text = task.descricao
             dataTile.text = task.dataLimite
+            //Limpa o listener antigo para evitar seu acionamento acidental
             taskCompletedCb.setOnCheckedChangeListener(null)
             taskCompletedCb.isChecked = task.concluida
-            // Desabilita o checkbox se a tarefa estiver na lixeira
+            //desabilita se estiver na lixeira
             taskCompletedCb.isEnabled = !isDeletedList
 
-            // Aplica ou remove o risco no texto
+            //Se o chackbox estiver ativado, adiciona um risco no título da task
             tituloTile.paintFlags = if (task.concluida) {
                 tituloTile.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             } else {
                 tituloTile.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
             }
 
+            //Se o usuário clica na checkbox, ele chama a função onTaskClickListener da Activity, passando a posição e o novo estado da tarefa
             taskCompletedCb.setOnCheckedChangeListener { _, isChecked ->
                 onTaskClickListener.onTaskCheckClick(adapterPosition, isChecked)
             }

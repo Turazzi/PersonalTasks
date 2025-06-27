@@ -45,4 +45,7 @@ O projeto necessita do arquivo de configuração do Firebase para se conectar ao
 
 Assista a um vídeo de 1 minuto demonstrando as principais funcionalidades do aplicativo em execução.
 
-**(COLOQUE O LINK PARA O SEU VÍDEO AQUI)**
+
+https://github.com/user-attachments/assets/022034db-c5f0-448d-b38c-b5b4bb1796ab
+
+

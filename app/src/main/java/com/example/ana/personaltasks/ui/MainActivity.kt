@@ -102,6 +102,7 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQuer
             //limpa a lista e preenche com os dados novos
             allTasks.clear()
             allTasks.addAll(sortedTasks)
+            amb.contadorTv.text = "Tarefas (${allTasks.size})"
             filterTasks()
         }
     }

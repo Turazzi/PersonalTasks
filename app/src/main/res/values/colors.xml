@@ -2,4 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="overdue_task_red">#C75A5A</color>
+    <color name="default_task_color">#5C56A0</color>
 </resources>

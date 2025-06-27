@@ -23,7 +23,7 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
 
         // verifica se já tem um usuário válido guardado
-        if(auth.currentUser != null) {
+        if (auth.currentUser != null) {
             //se tiver, usuário ja fez login antes que nao foi expirado - nao precisa mostrar a tela de login, vai direto pra main
             startActivity(Intent(this, MainActivity::class.java))
             finish()
@@ -39,16 +39,18 @@ class LoginActivity : AppCompatActivity() {
                     //tratamento de resposta
                     .addOnCompleteListener(this) { task ->
                         //se o firebase responder que o login deu certo, ele vai para a main
-                        if(task.isSuccessful) {
+                        if (task.isSuccessful) {
                             startActivity(Intent(this, MainActivity::class.java))
                             finish()
-                        }
-                        else {
-                            Toast.makeText(baseContext, "Falha na autenticação.", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(
+                                baseContext,
+                                "Falha na autenticação.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
-            }
-            else {
+            } else {
                 Toast.makeText(baseContext, "Preencha todos os campos.", Toast.LENGTH_SHORT).show()
             }
         }
@@ -61,9 +63,17 @@ class LoginActivity : AppCompatActivity() {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
-                            Toast.makeText(baseContext, "Usuário registrado com sucesso.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                baseContext,
+                                "Usuário registrado com sucesso.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         } else {
-                            Toast.makeText(baseContext, "Falha no registro: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                baseContext,
+                                "Falha no registro: ${task.exception?.message}",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
             } else {

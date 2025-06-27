@@ -6,11 +6,15 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ana.personaltasks.R
 import com.example.ana.personaltasks.databinding.TileTaskBinding
 import com.example.ana.personaltasks.model.Task
 import com.example.ana.personaltasks.ui.OnTaskClickListener
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class  TaskAdapter (
     //Instruções iniciais
@@ -28,6 +32,8 @@ class  TaskAdapter (
         val descricaoTile: TextView = ttb.descricaoTile
         val dataTile: TextView = ttb.dataTile
         val taskCompletedCb: CheckBox = ttb.taskCompletedCb
+        val cardView = ttb.root
+
 
         //Executado assim que um viewHolder é criado , é aqui que configura os listeners que são os mesmos para todos os itens
         init {
@@ -95,6 +101,33 @@ class  TaskAdapter (
                 tituloTile.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             } else {
                 tituloTile.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            }
+
+            val todayCalendar = Calendar.getInstance()
+            todayCalendar.set(Calendar.HOUR_OF_DAY, 0)
+            todayCalendar.set(Calendar.MINUTE, 0)
+            todayCalendar.set(Calendar.SECOND, 0)
+            todayCalendar.set(Calendar.MILLISECOND, 0)
+            val today = todayCalendar.time
+
+            // 2. Tentar converter a data da tarefa
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val taskDate = try {
+                dateFormat.parse(task.dataLimite)
+            } catch (e: Exception) {
+                null // Retorna nulo se a data for inválida
+            }
+
+            // 3. Verificar se a tarefa está atrasada
+            val isOverdue = taskDate != null && taskDate.before(today) && !task.concluida
+
+            // 4. Mudar a cor do card com base no estado
+            if (isOverdue) {
+                // Se estiver atrasada, define a cor vermelha
+                cardView.setCardBackgroundColor(ContextCompat.getColor(cardView.context, R.color.overdue_task_red))
+            } else {
+                // Senão, volta para a cor padrão
+                cardView.setCardBackgroundColor(ContextCompat.getColor(cardView.context, R.color.default_task_color)) // Use a sua cor padrão aqui
             }
 
             //Se o usuário clica na checkbox, ele chama a função onTaskClickListener da Activity, passando a posição e o novo estado da tarefa

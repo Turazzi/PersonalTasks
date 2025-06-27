@@ -93,6 +93,37 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/concluida"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#7B7A99" />
+
+            <TextView
+                android:id="@+id/priority_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/prioridade"
+                android:textColor="#2E2A5B"
+                android:textSize="15sp"/>
+
+            <CheckBox
+                android:id="@+id/cb_baixa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Baixa"/>
+
+            <CheckBox
+                android:id="@+id/cb_media"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/m_dia" />
+
+            <CheckBox
+                android:id="@+id/cb_alta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/alta" />
+
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

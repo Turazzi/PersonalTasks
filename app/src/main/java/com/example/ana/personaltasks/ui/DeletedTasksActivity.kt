@@ -196,8 +196,12 @@ class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener, SearchView
     }
 
 
+
+
     //opcoes que nao sao usadas aqui
     override fun onRemoveTaskMenuItemClick(position: Int) {}
     override fun onEditTaskMenuItemClick(position: Int) {}
     override fun onTaskCheckClick(position: Int, isChecked: Boolean) {}
+    override fun onPriorityTaskCheckClick(position: Int, isChecked: Boolean) {
+    }
 }

@@ -34,7 +34,6 @@ class  TaskAdapter (
         val taskCompletedCb: CheckBox = ttb.taskCompletedCb
         val cardView = ttb.root
 
-
         //Executado assim que um viewHolder é criado , é aqui que configura os listeners que são os mesmos para todos os itens
         init {
             //configura o que acontece quando da um clique longo no item
@@ -96,6 +95,8 @@ class  TaskAdapter (
             //desabilita se estiver na lixeira
             taskCompletedCb.isEnabled = !isDeletedList
 
+
+
             //Se o chackbox estiver ativado, adiciona um risco no título da task
             tituloTile.paintFlags = if (task.concluida) {
                 tituloTile.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
@@ -136,4 +137,5 @@ class  TaskAdapter (
             }
         }
     }
+
 }

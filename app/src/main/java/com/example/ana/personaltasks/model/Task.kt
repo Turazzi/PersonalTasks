@@ -13,8 +13,12 @@ data class Task(
     var descricao: String = "",
     var dataLimite: String = "",
     var concluida: Boolean = false,
+    var baixaPrioridade: Boolean = false,
+    var mediaPrioridade: Boolean = false,
+    var altaPrioridade: Boolean = false,
     var deleted: Boolean = false,
     var userId: String? = null
+
 ) : Parcelable {
     //Anotação específica do firebase
     //Se não colocar o exclude, o firebase reconhece a função como um dado que precisa ser salvo
@@ -28,6 +32,9 @@ data class Task(
             "descricao" to descricao,
             "dataLimite" to dataLimite,
             "concluida" to concluida,
+            "baixaPrioridade" to baixaPrioridade,
+            "mediaPrioridade" to mediaPrioridade,
+            "altaPrioridade" to altaPrioridade,
             "deleted" to deleted,
             "userId" to userId
         )

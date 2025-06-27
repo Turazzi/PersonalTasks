@@ -53,6 +53,9 @@ class TaskActivity : AppCompatActivity() {
             acb.descricaoEt.setText(receivedTask!!.descricao)
             acb.dataEt.setText(receivedTask!!.dataLimite)
             acb.cbConcluida.isChecked = receivedTask!!.concluida
+            acb.cbBaixa.isChecked = receivedTask!!.baixaPrioridade
+            acb.cbMedia.isChecked = receivedTask!!.mediaPrioridade
+            acb.cbAlta.isChecked = receivedTask!!.altaPrioridade
 
             val isViewOnly = intent.getBooleanExtra(EXTRA_VIEW_TASK, false)
             if (isViewOnly) {
@@ -94,6 +97,9 @@ class TaskActivity : AppCompatActivity() {
         acb.descricaoEt.isEnabled = false
         acb.dataEt.isEnabled = false
         acb.cbConcluida.isEnabled = false
+        acb.cbBaixa.isEnabled = false
+        acb.cbMedia.isEnabled = false
+        acb.cbAlta.isEnabled = false
         acb.buttonContainer.visibility = View.GONE
         acb.backBt.visibility = View.VISIBLE
         acb.backBt.setOnClickListener { finish() }
@@ -117,12 +123,18 @@ class TaskActivity : AppCompatActivity() {
             titulo = titulo,
             descricao = descricao,
             dataLimite = acb.dataEt.text.toString(),
-            concluida = acb.cbConcluida.isChecked
+            concluida = acb.cbConcluida.isChecked,
+            baixaPrioridade = acb.cbBaixa.isChecked,
+            mediaPrioridade = acb.cbMedia.isChecked,
+            altaPrioridade = acb.cbAlta.isChecked
         ) ?: Task(
             titulo = titulo,
             descricao = descricao,
             dataLimite = acb.dataEt.text.toString(),
             concluida = acb.cbConcluida.isChecked,
+            baixaPrioridade = acb.cbBaixa.isChecked,
+            mediaPrioridade = acb.cbMedia.isChecked,
+            altaPrioridade = acb.cbAlta.isChecked,
             userId = FirebaseAuth.getInstance().currentUser?.uid
         )
 

@@ -69,6 +69,9 @@
                 android:text="@string/data"
                 android:textSize="12sp"
                 android:textColor="#B3A9DC" />
+
+
+
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

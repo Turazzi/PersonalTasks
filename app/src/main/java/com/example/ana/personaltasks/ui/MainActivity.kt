@@ -222,6 +222,12 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQuer
         mainController.modifyTask(task)
     }
 
+    override fun onPriorityTaskCheckClick(position: Int, isChecked: Boolean) {
+        val task = taskList[position]
+
+    }
+
     override fun onReactivateTaskMenuItemClick(position: Int) {}
     override fun onPermanentDeletTaskMenuItemClick(position: Int) {}
+
 }

@@ -7,4 +7,5 @@ sealed interface OnTaskClickListener {
     fun onTaskCheckClick(position: Int, isChecked: Boolean)
     fun onReactivateTaskMenuItemClick(position: Int)
     fun onPermanentDeletTaskMenuItemClick(position: Int)
+    fun onPriorityTaskCheckClick(position: Int, isChecked: Boolean)
 }

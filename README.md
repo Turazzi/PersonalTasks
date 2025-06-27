@@ -47,3 +47,5 @@ Assista a um vídeo de 1 minuto demonstrando as principais funcionalidades do ap
 
 https://github.com/user-attachments/assets/9ccbc199-36d9-4622-9481-3e9fe9f4d2d8
 
+
+

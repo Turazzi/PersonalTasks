@@ -6,4 +6,5 @@ sealed interface OnTaskClickListener {
     fun onEditTaskMenuItemClick(position: Int)
     fun onTaskCheckClick(position: Int, isChecked: Boolean)
     fun onReactivateTaskMenuItemClick(position: Int)
+    fun onPermanentDeletTaskMenuItemClick(position: Int)
 }

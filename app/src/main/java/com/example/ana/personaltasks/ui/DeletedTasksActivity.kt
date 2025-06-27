@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -178,6 +179,20 @@ class DeletedTasksActivity: AppCompatActivity(), OnTaskClickListener, SearchView
         val task = deletedTaskList[position]
         mainController.reactivateTask(task)
         Toast.makeText(this, "Tarefa reativada!", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onPermanentDeletTaskMenuItemClick(position: Int) {
+        val task = deletedTaskList[position]
+
+        AlertDialog.Builder(this)
+            .setTitle("Excluir Permanentemente")
+            .setMessage("Tem certeza de que deseja excluir a tarefa '${task.titulo}'? Esta ação não pode ser desfeita.")
+            .setPositiveButton("Excluir") {_, _ ->
+                mainController.permanentDeleteTask(task)
+                Toast.makeText(this, "Tarefa excluída permanentemente", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
 

@@ -40,5 +40,6 @@
     <string name="n_o_definida">Não definida</string>
     <string name="data_de_in_cio">Data de Início</string>
     <string name="data_de_fim">Data de Fim</string>
+    <string name="deletar_permanentemente">Deletar permanentemente</string>
 
 </resources>

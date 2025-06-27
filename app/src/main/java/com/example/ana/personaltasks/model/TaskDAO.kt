@@ -8,4 +8,5 @@ interface TaskDAO {
     suspend fun updateTask(task: Task)
     suspend fun deleteTask(task: Task)
     suspend fun reactivateTask(task: Task)
+    suspend fun deletePermanently(task: Task)
 }

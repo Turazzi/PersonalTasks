@@ -223,4 +223,5 @@ class MainActivity : AppCompatActivity(), OnTaskClickListener, SearchView.OnQuer
     }
 
     override fun onReactivateTaskMenuItemClick(position: Int) {}
+    override fun onPermanentDeletTaskMenuItemClick(position: Int) {}
 }

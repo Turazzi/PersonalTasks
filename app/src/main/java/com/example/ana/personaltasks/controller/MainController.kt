@@ -43,4 +43,8 @@ class MainController {
         taskDAO.reactivateTask(task)
     }
 
+    fun permanentDeleteTask(task: Task) = CoroutineScope(Dispatchers.IO).launch {
+        taskDAO.deletePermanently(task)
+    }
+
 }

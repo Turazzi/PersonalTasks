@@ -84,5 +84,9 @@ class TaskFirebase : TaskDAO {
         task.id?.let { database.child(it).child("deleted").setValue(false).await() }
     }
 
+    override suspend fun deletePermanently(task: Task) {
+        task.id?.let {database.child(it).removeValue().await()}
+    }
+
 
 }

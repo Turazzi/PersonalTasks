@@ -45,6 +45,10 @@ class  TaskAdapter (
                         onTaskClickListener.onTaskClick(adapterPosition)
                         true
                     }
+                    menu.findItem(R.id.permanent_delet_task_mi)?.setOnMenuItemClickListener {
+                        onTaskClickListener.onPermanentDeletTaskMenuItemClick(adapterPosition)
+                        true
+                    }
                     //se for false, ele infla a view da main
                 } else {
                     activity.menuInflater.inflate(R.menu.context_menu_main, menu)
